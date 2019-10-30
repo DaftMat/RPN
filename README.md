@@ -25,7 +25,7 @@ The application takes zero or one argument :
 ## Examples of execution
 ```sh
 $ ./RPNapp
-> Welcome to the RPN application. Type expresions (CTRL-D to end).
+> Welcome to the RPN application. Type expressions (CTRL-D to end).
 > 5 + 9
 > 5 + 9 = 14
 > 8 * (2 ^ 3)
