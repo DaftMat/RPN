@@ -1,0 +1,3 @@
+[submodule "3rdPartyLibs/acutest"]
+	path = 3rdPartyLibs/acutest
+	url = https://github.com/mity/acutest.git
