@@ -22,6 +22,8 @@ public:
 
     ///Pure virtual type returning function
     virtual TokenType type() const = 0;
+
+    ///Virtual function for priority, 0 by default
     virtual int priority() const { return 0; }
 };
 

@@ -9,11 +9,9 @@
 
 class TokenPar : public TokenOpe {
 public:
+    /// Constructors
     explicit TokenPar(const std::string & str) : TokenOpe { *str.c_str() } {}
     explicit TokenPar(char op) : TokenOpe { op } {}
-
-    TokenPar(const TokenPar & token) = default;
-    TokenPar(TokenPar && token) noexcept = default;
 
     TokenType type() const override { return PARENTHESIS; }
 };

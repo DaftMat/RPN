@@ -21,8 +21,10 @@ void Expr::print() const {
 double Expr::eval() const {
     if (m_expr == "0") throw EmptyExpression();
     try {
+        // get the RPN queue
         auto rpn = rpnFromString(m_expr);
         std::stack<TokenNum> values;
+        // parse it
         while (!rpn.empty()) {
             if (rpn.front()->type() == Token::NUMBER) {
                 values.push(dynamic_cast<TokenNum &>(*rpn.front()));

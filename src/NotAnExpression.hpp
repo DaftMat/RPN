@@ -5,9 +5,10 @@
 #ifndef RPN_NOTANEXPRESSION_HPP
 #define RPN_NOTANEXPRESSION_HPP
 
-
 #include <string>
 
+/// Exceptions classes
+/// Exception to be thrown when the parsed expression is invalid
 class NotAnExpression {
 public:
     explicit NotAnExpression(const std::string &msg) : m_msg { msg } {}
@@ -23,6 +24,8 @@ private:
     std::string m_msg;
 };
 
+/// Exception to be thrown when the parsed expression is empty.
+/// \note : a valid number of empty parenthesis will throw this exception (such as "((()))")
 class EmptyExpression {
 public:
     EmptyExpression() = default;

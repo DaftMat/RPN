@@ -5,6 +5,7 @@
 #ifndef TP1_EXPR_HPP
 #define TP1_EXPR_HPP
 
+/// Expression class
 class Expr {
 
 public:
@@ -20,6 +21,7 @@ public:
 
     /**
      * Prints the intern representation of the expression
+     * (Using << operator to stdout in the application)
      */
     void print() const;
 
