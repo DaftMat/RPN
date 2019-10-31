@@ -1,10 +1,10 @@
 # RPN School project
-RPN is a calculation method to parse a mathematical expression from left to right.
+RPN (Reverse Polish Notation) is a calculation method to parse a mathematical expression from left to right.
 Done in C++.
 
 # Compilation
 Run the following commands :
-```sh
+```txt
 $ mkdir build
 $ cd build
 $ cmake ..
@@ -12,8 +12,10 @@ $ make
 ```
 
 # Running application
+
+
 Here's the location where you'll find the executable application :
-```sh
+```txt
 Bundle-*/Debug/bin
 ```
 note : * is the name of the compiler you use (can be GNU, CLANG, ...)
@@ -23,7 +25,7 @@ The application takes zero or one argument :
  - Otherwise, it will ask you expressions through STDIN.
 
 ## Examples of execution
-```sh
+```txt
 $ ./RPNapp
 > Welcome to the RPN application. Type expressions (CTRL-D to end).
 > 5 + 9
@@ -35,4 +37,8 @@ $ ./RPNapp path/to/file.txt
 > 8 * (2 ^ 3) = 64
 ```
 
-
+## Example of file to be parsed
+```txt
+5 + 9
+8 * (2 ^ 3)
+```
