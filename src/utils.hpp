@@ -68,9 +68,4 @@ std::queue<std::shared_ptr<Token>> rpnFromString(const std::string & s);
  */
 TokenNum applyOperator(const TokenNum &t1, const TokenNum &t2, const TokenOpe &op);
 
-/// Helper class to have an empty delete function (to store std::cin into smart pointers)
-struct EmptyDel {
-    void operator()(std::istream *) {}
-};
-
 #endif //TP1_UTILS_HPP

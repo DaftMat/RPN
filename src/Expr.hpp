@@ -10,8 +10,8 @@ class Expr {
 
 public:
     /// Constructors
-    Expr() : m_expr { "0" } {}
-    explicit Expr(const char * expr) : m_expr { expr } {}
+    Expr() : m_expr { "0" }, m_hasSemi { false } {}
+    explicit Expr(const char * expr);
 
     /**
      * Evaluates expression
@@ -25,12 +25,15 @@ public:
      */
     void print() const;
 
+    bool hasSemi() const;
+
     /// stream operators
     friend std::istream& operator>>(std::istream &is, Expr & expr);
     friend std::ostream& operator<<(std::ostream &os, const Expr & expr);
 
 private:
     std::string m_expr;
+    bool m_hasSemi;
 };
 
 #endif //TP1_EXPR_HPP

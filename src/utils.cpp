@@ -26,7 +26,7 @@ std::vector<std::string> split(const std::string & s) {
             current.push_back(c);
             ret.push_back(current);
             current.erase();
-        } else if (c != ' ' && c != '\t'){
+        } else if (c != ' ' && c != '\t' && c != ';'){
             std::string cha { c };
             throw NotAnExpression("unknown operator `"+cha+"`.");
         }
@@ -44,7 +44,7 @@ std::vector<std::shared_ptr<Token>> stringToTokens(const std::string &s) {
         std::vector<std::shared_ptr<Token>> ret;
         for (auto &str : stringList) {
             int prio = getType(str);
-            if (prio > 3) {
+            if (prio > 3 && prio != 6) { //dont add it if it's `;`
                 ret.push_back(std::shared_ptr<Token>(new TokenPar(str)));
             } else if (prio) {
                 ret.push_back(std::shared_ptr<Token>(new TokenOpe(str)));
@@ -73,6 +73,8 @@ int isOperator(char c) {
         return 4;
     if (c == ')')
         return 5;
+    if (c == ';')
+        return 6;
     return 0;
 }
 

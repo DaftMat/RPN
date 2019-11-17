@@ -14,6 +14,10 @@
 #include "Expr.hpp"
 #include "NotAnExpression.hpp"
 
+Expr::Expr(const char * expr) : m_expr { expr } {
+    m_hasSemi = std::regex_match(m_expr, std::regex(".*;"));
+}
+
 void Expr::print() const {
     std::cout << m_expr << std::endl;
 }
@@ -49,10 +53,15 @@ double Expr::eval() const {
     }
 }
 
+bool Expr::hasSemi() const {
+    return m_hasSemi;
+}
+
 std::istream& operator>>(std::istream &is, Expr & expr) {
     std::getline(is, expr.m_expr);
     if (std::regex_match(expr.m_expr, std::regex("[( \t]*[) \t]*"))) ///check if there are only spaces (or only parenthesis)
         expr.m_expr = "0";
+    expr.m_hasSemi = std::regex_match(expr.m_expr, std::regex(".*;"));
     return is;
 }
 
