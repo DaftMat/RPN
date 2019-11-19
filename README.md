@@ -8,7 +8,8 @@ Done in C++.
 # Features
  - RPN calculation (parse any valid expression)
  - Do nothing when there is `;` at the end of the expression
- - Variables management (only letters)
+ - Variables declaration and management
+ - Functions management
 
 # Compilation
 Run the following commands :
@@ -32,7 +33,7 @@ The application takes zero or one argument :
  - Otherwise, it will ask you expressions through STDIN.
 
 ### Examples of execution
-Basic Expression usage :
+Basic Expression usage (stdin) :
 ```txt
 $ ./RPNapp
 > Welcome to the RPN application. Type expressions (CTRL-D to end).
@@ -49,14 +50,25 @@ $ ./RPNapp path/to/file.txt
 Variables usage:
 ```txt
 > Welcome to the RPN application. Type expressions (CTRL-D to end).
-> twopi = 2 * 3.1415926536;
+> a = 1;
+> a = a + 1;
+> twopi = a * 3.1415926536;
 > radius = 3*8;
 > circ = twopi * radius;
 > circ
 > circ = 150.79644738
 ```
 
-File Usage :
+Functions usage:
+```txt
+> Welcome to the RPN application. Type expressions (CTRL-D to end).
+> sin(9)
+> sin(9) = 0.412118
+> pow(pow(2, 2), 1+1)
+> pow(pow(2, 2), 1+1) = 16
+```
+
+File format (txt) :
 ```txt
 5 + 9
 8 * (2 ^ 3);
