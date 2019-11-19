@@ -78,7 +78,7 @@ std::istream& operator>>(std::istream &is, Expr & expr) {
                 throw EmptyExpression(e);
             }
         }
-        else throw NotAnExpression("variable name already exists");
+        else Expr::m_vars.at(temp[0]) = expr.eval();
     }
     return is;
 }
