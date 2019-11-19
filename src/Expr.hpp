@@ -5,12 +5,16 @@
 #ifndef TP1_EXPR_HPP
 #define TP1_EXPR_HPP
 
+#include <map>
+
 /// Expression class
 class Expr {
 
 public:
+    static std::map<std::string, double> m_vars;
+
     /// Constructors
-    Expr() : m_expr { "0" }, m_hasSemi { false } {}
+    Expr() : m_expr { "0" }, m_hasSemi { false }, m_isVarDecl { false } {}
     explicit Expr(const char * expr);
 
     /**
@@ -34,6 +38,7 @@ public:
 private:
     std::string m_expr;
     bool m_hasSemi;
+    bool m_isVarDecl;
 };
 
 #endif //TP1_EXPR_HPP

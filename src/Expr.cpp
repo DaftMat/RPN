@@ -14,8 +14,11 @@
 #include "Expr.hpp"
 #include "NotAnExpression.hpp"
 
+std::map<std::string, double> Expr::m_vars;
+
 Expr::Expr(const char * expr) : m_expr { expr } {
     m_hasSemi = std::regex_match(m_expr, std::regex(".*;"));
+    m_isVarDecl = std::regex_match(m_expr, std::regex(".*/=.*"));
 }
 
 void Expr::print() const {
@@ -23,7 +26,6 @@ void Expr::print() const {
 }
 
 double Expr::eval() const {
-    if (m_expr == "0") throw EmptyExpression();
     try {
         // get the RPN queue
         auto rpn = rpnFromString(m_expr);
@@ -62,6 +64,22 @@ std::istream& operator>>(std::istream &is, Expr & expr) {
     if (std::regex_match(expr.m_expr, std::regex("[( \t]*[) \t]*"))) ///check if there are only spaces (or only parenthesis)
         expr.m_expr = "0";
     expr.m_hasSemi = std::regex_match(expr.m_expr, std::regex(".*;"));
+    expr.m_isVarDecl = std::regex_match(expr.m_expr, std::regex("[a-zA-Z]+[ \t]*=.*"));
+
+    if (expr.m_isVarDecl) {
+        auto temp = split_std(expr.m_expr, '=');
+        expr.m_expr = temp[1];
+        if (Expr::m_vars.count(temp[0]) == 0) {
+            try {
+                Expr::m_vars.insert(std::make_pair(temp[0], expr.eval()));
+            } catch (NotAnExpression &e) {
+                throw NotAnExpression(e);
+            } catch (EmptyExpression &e) {
+                throw EmptyExpression(e);
+            }
+        }
+        else throw NotAnExpression("variable name already exists");
+    }
     return is;
 }
 

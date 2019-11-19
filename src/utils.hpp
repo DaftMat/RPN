@@ -23,6 +23,7 @@ class TokenOpe;
  * @return the string list
  */
 std::vector<std::string> split(const std::string & s);
+std::vector<std::string> split_std(const std::string & s, char sep);
 
 /**
  * Turns a string into a token list

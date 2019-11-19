@@ -5,20 +5,24 @@
 #include <stack>
 #include <cmath>
 #include <iostream>
+#include <sstream>
+#include <ctype.h>
 
 #include "utils.hpp"
 #include "NotAnExpression.hpp"
 #include "Token/TokenNum.hpp"
 #include "Token/TokenOpe.hpp"
 #include "Token/TokenPar.hpp"
+#include "Expr.hpp"
 
 std::vector<std::string> split(const std::string & s) {
     std::vector<std::string> ret;
     std::string current;
-    for(auto c : s) {
-        if (isDigit(c)){
+    for(char c : s) {
+        std::string cha { c };
+        if (isDigit(c) || isalpha(c)){
             current.push_back(c);
-        } else if (isOperator(c)) {
+        } else if (isOperator(c) > 0) {
             if (!current.empty()) {
                 ret.push_back(current);
                 current.erase();
@@ -26,8 +30,7 @@ std::vector<std::string> split(const std::string & s) {
             current.push_back(c);
             ret.push_back(current);
             current.erase();
-        } else if (c != ' ' && c != '\t' && c != ';'){
-            std::string cha { c };
+        } else if ( c != ' ' && c != '\n' && c != '\t'){
             throw NotAnExpression("unknown operator `"+cha+"`.");
         }
     }
@@ -38,6 +41,24 @@ std::vector<std::string> split(const std::string & s) {
     return ret;
 }
 
+std::vector<std::string> split_std(const std::string &s, char sep) {
+    std::vector<std::string> tokens;
+    std::string token;
+    for (auto c : s)
+    {
+        if (c == sep) {
+            if (!token.empty())
+                tokens.push_back(token);
+            token.erase();
+        } else if (c != ' ' && c != '\t') {
+            token.push_back(c);
+        }
+    }
+    if (!token.empty())
+        tokens.push_back(token);
+    return tokens;
+}
+
 std::vector<std::shared_ptr<Token>> stringToTokens(const std::string &s) {
     try {
         auto stringList = split(s);
@@ -46,10 +67,13 @@ std::vector<std::shared_ptr<Token>> stringToTokens(const std::string &s) {
             int prio = getType(str);
             if (prio > 3 && prio != 6) { //dont add it if it's `;`
                 ret.push_back(std::shared_ptr<Token>(new TokenPar(str)));
-            } else if (prio) {
+            } else if (prio > 0 && prio !=6) {
                 ret.push_back(std::shared_ptr<Token>(new TokenOpe(str)));
-            } else {
+            } else if (!prio){
                 ret.push_back(std::shared_ptr<Token>(new TokenNum(str)));
+            } else if (prio < 0) {
+                if (Expr::m_vars.count(str) == 0)   throw NotAnExpression("variable name \"" + str + "\" doesn't exist");
+                ret.push_back(std::shared_ptr<Token>(new TokenNum(Expr::m_vars.at(str))));
             }
         }
         return ret;
@@ -75,7 +99,9 @@ int isOperator(char c) {
         return 5;
     if (c == ';')
         return 6;
-    return 0;
+    if (isDigit(c))
+        return 0;
+    return -1;
 }
 
 bool isDigit(char c) {

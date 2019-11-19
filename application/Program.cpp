@@ -17,8 +17,9 @@ Program::Program(char *path) : m_inputIsStdin { false } {
 void Program::exec() {
     Expr expr;
     if (m_inputIsStdin)   std::cout << "> ";
-    while (*m_input >> expr) {
+    while (*m_input) {
         try {
+            *m_input >> expr;
             if (!expr.hasSemi()) {
                 double res = expr.eval();
                 std::cout << "> " << expr << " = " << res << std::endl;
