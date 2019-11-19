@@ -9,6 +9,7 @@
 #include <queue>
 #include <string>
 #include <memory>
+#include <functional>
 
 #include "Token/Token.hpp"
 
@@ -68,5 +69,18 @@ std::queue<std::shared_ptr<Token>> rpnFromString(const std::string & s);
  * @return the resulting number token
  */
 TokenNum applyOperator(const TokenNum &t1, const TokenNum &t2, const TokenOpe &op);
+
+/**
+ * adds a function to the functions map
+ * @param name - name of the function
+ * @param argc - number of arguments the function takes
+ * @param fun - the C++ lambda to be applied
+ */
+void add_function(const std::string & name, int argc, const std::function<double(std::vector<double>)> & fun);
+
+/**
+ * Adds base functions to the func map
+ */
+void init_base_functions();
 
 #endif //TP1_UTILS_HPP

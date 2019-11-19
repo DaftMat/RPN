@@ -15,10 +15,10 @@
 #include "NotAnExpression.hpp"
 
 std::map<std::string, double> Expr::m_vars;
+std::map<std::string, std::function<double(std::vector<double>)>> Expr::m_func;
 
 Expr::Expr(const char * expr) : m_expr { expr } {
     m_hasSemi = std::regex_match(m_expr, std::regex(".*;"));
-    m_isVarDecl = std::regex_match(m_expr, std::regex(".*/=.*"));
 }
 
 void Expr::print() const {

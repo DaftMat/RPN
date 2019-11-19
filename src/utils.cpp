@@ -19,7 +19,6 @@ std::vector<std::string> split(const std::string & s) {
     std::vector<std::string> ret;
     std::string current;
     for(char c : s) {
-        std::string cha { c };
         if (isDigit(c) || isalpha(c)){
             current.push_back(c);
         } else if (isOperator(c) > 0) {
@@ -30,7 +29,8 @@ std::vector<std::string> split(const std::string & s) {
             current.push_back(c);
             ret.push_back(current);
             current.erase();
-        } else if ( c != ' ' && c != '\n' && c != '\t'){
+        } else if ( c != ' ' && c != '\n' && c != '\t' && c != ','){
+            std::string cha { c };
             throw NotAnExpression("unknown operator `"+cha+"`.");
         }
     }
@@ -62,18 +62,60 @@ std::vector<std::string> split_std(const std::string &s, char sep) {
 std::vector<std::shared_ptr<Token>> stringToTokens(const std::string &s) {
     try {
         auto stringList = split(s);
+        bool funcEntered = false;
+        bool scdFuncEntered = false;
+        bool firstPara = false;
         std::vector<std::shared_ptr<Token>> ret;
+        std::string funcName;
+        std::vector<double> funcArgs;
+        std::string exprArg;
         for (auto &str : stringList) {
             int prio = getType(str);
-            if (prio > 3 && prio != 6) { //dont add it if it's `;`
-                ret.push_back(std::shared_ptr<Token>(new TokenPar(str)));
+            if (prio == 4) {
+                if (!funcEntered) ret.push_back(std::shared_ptr<Token>(new TokenPar(str)));
+                else if (!firstPara) exprArg.append(str);
+                firstPara = false;
+            } else if (prio == 5) {
+                if (funcEntered) {
+                    if (scdFuncEntered) {
+                        exprArg.append(str);
+                        scdFuncEntered = false;
+                    } else {
+                        if (!exprArg.empty()) funcArgs.push_back(Expr(exprArg.c_str()).eval());
+                        double funcRet = Expr::m_func.at(funcName)(funcArgs);
+                        ret.push_back(std::shared_ptr<Token>(new TokenNum(funcRet)));
+                        exprArg.erase();
+                        funcArgs.clear();
+                    }
+                } else ret.push_back(std::shared_ptr<Token>(new TokenPar(str)));
+            } else if (prio == 7) {
+                if (!funcEntered) throw NotAnExpression("Unknown operator " + str);
+                if (scdFuncEntered) exprArg.append(str);
+                else {
+                    funcArgs.push_back(Expr(exprArg.c_str()).eval());
+                    exprArg.erase();
+                }
             } else if (prio > 0 && prio !=6) {
-                ret.push_back(std::shared_ptr<Token>(new TokenOpe(str)));
+                if (funcEntered) exprArg.append(str);
+                else ret.push_back(std::shared_ptr<Token>(new TokenOpe(str)));
             } else if (!prio){
-                ret.push_back(std::shared_ptr<Token>(new TokenNum(str)));
+                if (funcEntered) exprArg.append(str);
+                else ret.push_back(std::shared_ptr<Token>(new TokenNum(str)));
             } else if (prio < 0) {
-                if (Expr::m_vars.count(str) == 0)   throw NotAnExpression("variable name \"" + str + "\" doesn't exist");
-                ret.push_back(std::shared_ptr<Token>(new TokenNum(Expr::m_vars.at(str))));
+                if (Expr::m_vars.count(str))
+                    ret.push_back(std::shared_ptr<Token>(new TokenNum(Expr::m_vars.at(str))));
+                else if (Expr::m_func.count(str)) {
+                    if (!funcEntered) {
+                        funcName = str;
+                        firstPara = true;
+                    }
+                    else {
+                        exprArg.append(str);
+                        scdFuncEntered = true;
+                    }
+                    funcEntered = true;
+                }
+                else throw NotAnExpression("name \"" + str + "\" doesn't exist");
             }
         }
         return ret;
@@ -99,6 +141,8 @@ int isOperator(char c) {
         return 5;
     if (c == ';')
         return 6;
+    if (c == ',')
+        return 7;
     if (isDigit(c))
         return 0;
     return -1;
@@ -171,4 +215,22 @@ TokenNum applyOperator(const TokenNum &t1, const TokenNum &t2, const TokenOpe &o
         default:
             throw NotAnExpression("unknown operator "+std::to_string(op.value())+".");
     }
+}
+
+void add_function(const std::string & name, int argc, const std::function<double(std::vector<double>)> & fun) {
+    Expr::m_func.insert(std::make_pair(name, [fun, argc](const std::vector<double> & args) {
+        if (args.size() != argc)
+            throw NotAnExpression("Wrong argument number");
+        return fun(args);
+    }));
+}
+
+void init_base_functions() {
+    add_function("sin", 1, [](const std::vector<double> & args){ return std::sin(args[0]); });
+    add_function("cos", 1, [](const std::vector<double> & args){ return std::cos(args[0]); });
+    add_function("tan", 1, [](const std::vector<double> & args){ return std::tan(args[0]); });
+    add_function("sqrt", 1, [](const std::vector<double> & args){ return std::sqrt(args[0]); });
+    add_function("log", 1, [](const std::vector<double> & args){ return std::log(args[0]); });
+    add_function("exp", 1, [](const std::vector<double> & args){ return std::exp(args[0]); });
+    add_function("pow", 2, [](const std::vector<double> & args){ return std::pow(args[0], args[1]); });
 }

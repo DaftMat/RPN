@@ -4,6 +4,7 @@
 
 #include <NotAnExpression.hpp>
 #include <Expr.hpp>
+#include <utils.hpp>
 #include "Program.hpp"
 
 Program::Program() : m_inputIsStdin { true } {
@@ -15,6 +16,7 @@ Program::Program(char *path) : m_inputIsStdin { false } {
 }
 
 void Program::exec() {
+    init_base_functions();
     Expr expr;
     if (m_inputIsStdin)   std::cout << "> ";
     while (*m_input) {
