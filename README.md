@@ -59,13 +59,13 @@ Variables usage:
 > circ = 150.79644738
 ```
 
-Functions usage:
+Functions usage :
 ```txt
 > Welcome to the RPN application. Type expressions (CTRL-D to end).
 > sin(9)
 > sin(9) = 0.412118
-> pow(pow(2, 2), 1+1)
-> pow(pow(2, 2), 1+1) = 16
+> pow(pow(2, 2), (1+1))
+> pow(pow(2, 2), (1+1)) = 16
 ```
 
 File format (txt) :
