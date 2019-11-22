@@ -13,9 +13,10 @@
 
 #include "Expr.hpp"
 #include "NotAnExpression.hpp"
+#include "Token/TokenFun.hpp"
 
 std::map<std::string, double> Expr::m_vars;
-std::map<std::string, std::function<double(std::vector<double>)>> Expr::m_func;
+std::map<std::string, std::function<double(std::deque<double>)>> Expr::m_func;
 
 Expr::Expr(const char * expr) : m_expr { expr } {
     m_hasSemi = std::regex_match(m_expr, std::regex(".*;"));
@@ -29,25 +30,33 @@ double Expr::eval() const {
     try {
         // get the RPN queue
         auto rpn = rpnFromString(m_expr);
-        std::stack<TokenNum> values;
+        std::stack<std::shared_ptr<Token>> values;
         // parse it
         while (!rpn.empty()) {
-            if (rpn.front()->type() == Token::NUMBER) {
-                values.push(dynamic_cast<TokenNum &>(*rpn.front()));
-            } else {
-                auto t1 = values.top();
-                values.pop();
-                TokenNum t2(0);
-                if (values.empty()) throw NotAnExpression("a number is missing");
-                else {
-                    t2 = values.top();
+            if (rpn.front()->type() == Token::NUMBER || rpn.front()->type() == Token::PARENTHESIS) {
+                values.push(rpn.front());
+            } else if (rpn.front()->type() == Token::FUNCTION) {
+                std::deque<double> args;
+                if (values.empty()) throw NotAnExpression("an argument is missing");
+                while (values.top()->type() != Token::PARENTHESIS) {
+                    if (values.empty()) throw NotAnExpression("an argument is missing");
+                    args.push_front(dynamic_cast<TokenNum &>(*values.top()).value());
                     values.pop();
                 }
-                values.push(applyOperator(t1, t2, dynamic_cast<TokenOpe &>(*rpn.front())));
+                values.pop();//get rid of the parenthesis
+                values.push(std::shared_ptr<Token>(new TokenNum(dynamic_cast<TokenFun &>(*rpn.front()).applyFunction(args))));
+            } else {
+                if (values.empty()) throw NotAnExpression("a number is missing");
+                auto t1 = values.top();
+                values.pop();
+                if (values.empty()) throw NotAnExpression("a number is missing");
+                auto t2 = values.top();
+                values.pop();
+                values.push(std::shared_ptr<Token>(applyOperator(dynamic_cast<TokenNum &>(*t1), dynamic_cast<TokenNum &>(*t2), dynamic_cast<TokenOpe &>(*rpn.front()))));
             }
             rpn.pop();
         }
-        double ret = values.top().value();
+        double ret = dynamic_cast<TokenNum &>(*values.top()).value();
         values.pop();
         return ret;
     } catch (NotAnExpression& err) {

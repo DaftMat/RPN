@@ -68,7 +68,7 @@ std::queue<std::shared_ptr<Token>> rpnFromString(const std::string & s);
  * @param op operator token
  * @return the resulting number token
  */
-TokenNum applyOperator(const TokenNum &t1, const TokenNum &t2, const TokenOpe &op);
+TokenNum * applyOperator(const TokenNum &t1, const TokenNum &t2, const TokenOpe &op);
 
 /**
  * adds a function to the functions map

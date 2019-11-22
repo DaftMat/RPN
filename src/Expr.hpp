@@ -8,13 +8,14 @@
 #include <map>
 #include <functional>
 #include <vector>
+#include <deque>
 
 /// Expression class
 class Expr {
 
 public:
     static std::map<std::string, double> m_vars;
-    static std::map<std::string, std::function<double(std::vector<double>)>> m_func;
+    static std::map<std::string, std::function<double(std::deque<double>)>> m_func;
 
     /// Constructors
     Expr() : m_expr { "0" }, m_hasSemi { false }, m_isVarDecl { false } {}

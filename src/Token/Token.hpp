@@ -16,7 +16,8 @@ public:
     enum TokenType {
         NUMBER,
         OPERATOR,
-        PARENTHESIS
+        PARENTHESIS,
+        FUNCTION
     };
     virtual ~Token() = default;
 
