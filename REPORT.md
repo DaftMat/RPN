@@ -23,7 +23,7 @@ Au sein de la classe `Expr`, j'ai déclaré une map statique comportant tous les
 
 ### Gestion des fonctions
 
-J'ai décider de créer un nouveau Token, `TokenFun` prenant en attribut un nom. De la même maniere que les variables, une map statique comportant tous les noms de fonctions associés à une valeur (de type `std::function<double(std::deque<double>)>`). Je pouvais donc traiter la fonction comme un token et simplement l'appliquer au premier TokenNum dans la pile de valeurs. Cela n'est plus vrai lorsque le nombre d'argument est supérieur a 1 ET variable. Effectivement, en plus de devoir utiliser une `std::deque` pour la liste d'arguments, j'ai utilisé un marqeur dans le RPN afin de retrouver le dernier arguments de la fonction appelée :
+J'ai décidé de créer un nouveau Token, `TokenFun` prenant en attribut un nom. De la même maniere que les variables, une map statique comporte tous les noms de fonctions associés à une valeur (de type `std::function<double(std::deque<double>)>`). Je pouvais donc traiter la fonction comme un token et simplement l'appliquer au premier TokenNum dans la pile de valeurs. Cela n'est plus vrai lorsque le nombre d'arguments est supérieur a 1 ET variable. Effectivement, en plus de devoir utiliser une `std::deque` pour la liste d'arguments, j'ai utilisé un marqeur dans le RPN afin de retrouver le dernier arguments de la fonction appelée :
 ```txt
 > 2 + pow(2, 2)
 > RPN >> 2 ; 2 2 pow +
