@@ -17,6 +17,7 @@
 
 std::map<std::string, double> Expr::m_vars;
 std::map<std::string, std::function<double(std::deque<double>)>> Expr::m_func;
+std::map<std::string, std::string> Expr::m_usrFunc;
 
 Expr::Expr(const char * expr) : m_expr { expr } {
     m_hasSemi = std::regex_match(m_expr, std::regex(".*;"));
@@ -37,9 +38,9 @@ double Expr::eval() const {
                 values.push(rpn.front());
             } else if (rpn.front()->type() == Token::FUNCTION) {
                 std::deque<double> args;
-                if (values.empty()) throw NotAnExpression("an argument is missing");
+                if (values.empty()) throw WrongArgument();
                 while (values.top()->type() != Token::PARENTHESIS) {
-                    if (values.empty()) throw NotAnExpression("an argument is missing");
+                    if (values.empty()) throw WrongArgument();
                     args.push_front(dynamic_cast<TokenNum &>(*values.top()).value());
                     values.pop();
                 }
@@ -80,11 +81,24 @@ std::istream& operator>>(std::istream &is, Expr & expr) {
         expr.m_expr = temp[1];
         if (Expr::m_vars.count(temp[0]) == 0) {
             try {
-                Expr::m_vars.insert(std::make_pair(temp[0], expr.eval()));
+                if (std::regex_match(expr.m_expr, std::regex("polynome(.*);"))) {
+                    std::string f = expr.m_expr;
+                    f.pop_back();
+                    f.pop_back();
+                    f.push_back(',');
+                    Expr::m_usrFunc.insert(std::make_pair(temp[0], f));
+                } else
+                    Expr::m_vars.insert(std::make_pair(temp[0], expr.eval()));
             } catch (NotAnExpression &e) {
                 throw NotAnExpression(e);
             } catch (EmptyExpression &e) {
                 throw EmptyExpression(e);
+            } catch (WrongArgument &e) {
+                std::string f = expr.m_expr;
+                f.pop_back();
+                f.pop_back();
+                f.push_back(',');
+                Expr::m_usrFunc.insert(std::make_pair(temp[0], f));
             }
         }
         else Expr::m_vars.at(temp[0]) = expr.eval();

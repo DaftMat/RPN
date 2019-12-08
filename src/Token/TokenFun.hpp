@@ -18,7 +18,7 @@ public:
 
     const std::string& name() const { return m_name; }
 
-    double applyFunction(const std::deque<double> &args) const { return Expr::m_func.at(m_name)(args); }
+    double applyFunction(const std::deque<double> &args) const;
 
 private:
     std::string m_name;

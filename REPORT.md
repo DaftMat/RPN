@@ -29,3 +29,14 @@ J'ai décidé de créer un nouveau Token, `TokenFun` prenant en attribut un nom.
 > RPN >> 2 ; 2 2 pow +
 	   ^
 ```
+
+## Phase 3
+
+### Spécification partielle
+
+De manière semblable aux fonctions de base, j'ai créé une nouvelle map prenant une chaine de caractere en clé (le nom de la fonction), et une autre chaine de caractères en valeur (la fonction à identifier partiellement).
+
+Dans la map, la fonction a identifier sera mise en forme pour pouvoir etre directement utilisée comme expression apres y avoir ajouté le dernier argument.
+Par exemple, si l'utilisateur entre `l = lerp(a, b);`, la map de fonctions utilisateurs se verra ajouter le couple `"l", "lerp(a, b,"`.
+
+Remarque : la suppression de la parenthese fermante et l'ajout d'une virgule permet, lorsque l'utilisateur entre `l(x)` d'évaluer l'expression dont la chaine de caractere est : `lerp (a, b, x)` (`"lerp(a, b," + "x" + ")"`)

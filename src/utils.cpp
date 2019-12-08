@@ -79,7 +79,7 @@ std::vector<std::shared_ptr<Token>> stringToTokens(const std::string &s) {
                 ret.push_back(std::shared_ptr<Token>(new TokenNum(str)));
             } else if (prio == -1) {
                 if (Expr::m_vars.count(str))    ret.push_back(std::shared_ptr<Token>(new TokenNum(Expr::m_vars.at(str))));
-                else if (Expr::m_func.count(str)){
+                else if (Expr::m_func.count(str) || Expr::m_usrFunc.count(str)){
                     ret.push_back(std::shared_ptr<Token>(new TokenFun(str)));
                 }
                 else throw NotAnExpression("undefined function or variable " + str);
@@ -193,7 +193,7 @@ TokenNum * applyOperator(const TokenNum &t1, const TokenNum &t2, const TokenOpe 
 void add_function(const std::string & name, int argc, const std::function<double(std::deque<double>)> & fun) {
     Expr::m_func.insert(std::make_pair(name, [fun, argc](const std::deque<double> & args) {
         if (args.size() != argc)
-            throw NotAnExpression("Wrong argument number");
+            throw WrongArgument();
         return fun(args);
     }));
 }

@@ -16,6 +16,7 @@ class Expr {
 public:
     static std::map<std::string, double> m_vars;
     static std::map<std::string, std::function<double(std::deque<double>)>> m_func;
+    static std::map<std::string, std::string> m_usrFunc;
 
     /// Constructors
     Expr() : m_expr { "0" }, m_hasSemi { false }, m_isVarDecl { false } {}

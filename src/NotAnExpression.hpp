@@ -38,5 +38,16 @@ public:
     }
 };
 
+class WrongArgument {
+public:
+    WrongArgument() = default;
+
+    WrongArgument(const WrongArgument &exc) {}
+    WrongArgument(WrongArgument &&exc ) {}
+
+    std::string error() {
+        return "Wrong amount of arguments.";
+    }
+};
 
 #endif //RPN_NOTANEXPRESSION_HPP
